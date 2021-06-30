@@ -1,0 +1,191 @@
+import pygame
+import time
+import random
+
+# Create game windows
+pygame.init()
+info = pygame.display.Info()
+screen_width, screen_height = info.current_w, info.current_h
+window_width, window_height = screen_width - 200, screen_height - 50
+game_window = pygame.display.set_mode((window_width, window_height))
+pygame.display.set_caption("Memory Game")
+
+white_surface = pygame.Surface((600, 600))
+white_surface.fill((255, 255, 255))
+game_window.fill((255, 255, 255))
+
+game_window.blit(white_surface, (0, 0))
+
+font = pygame.font.Font('MitsuEHandwriting-R.otf', 30)
+end_font = pygame.font.Font('MitsuEHandwriting-R.otf', 100)
+attempt_count = 0
+flip_count = 0
+alphabet_list = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T",
+                 "U",
+                 "V", "W", "X", "Y", "Z", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o",
+                 "p", "q", "r", "s", "t", "u",
+                 "v", "w", "x", "y", "z"]
+
+
+class Cards:
+    def __init__(self, x, y):
+        self.color = (255, 0, 0)
+        self.x = x
+        self.y = y
+        self.letter = ""
+        self.width = 100
+        self.height = 120
+        self.clicked_color = (211, 211, 211)
+        self.clicked = False
+        self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
+
+    def draw_card(self):
+        pygame.draw.rect(game_window, self.color, (self.x, self.y, self.width, self.height))
+
+    def flip_card(self):
+        pygame.draw.rect(game_window, self.clicked_color, (self.x, self.y, self.width, self.height))
+        reveal_letter = font.render(self.letter, True, (0, 0, 0), )
+        game_window.blit(reveal_letter, (self.x + 50, self.y + 40))
+        global flip_count
+        flip_count += 1
+
+# Y coords
+ROW_1 = 15
+ROW_2 = ROW_1 + 125
+ROW_3 = ROW_2 + 125
+ROW_4 = ROW_3 + 125
+ROW_5 = ROW_4 + 125
+ROW_6 = ROW_5 + 125
+ROW_7 = ROW_6 + 125
+# X coords
+COL_1 = 25
+COL_2 = 215
+COL_3 = 405
+COL_4 = 595
+COL_5 = 785
+COL_6 = 975
+COL_7 = 1165
+COL_8 = 1355
+ALT_COL_1 = COL_1 + 50
+ALT_COL_2 = COL_2 + 50
+ALT_COL_3 = COL_3 + 50
+ALT_COL_4 = COL_4 + 50
+ALT_COL_5 = COL_5 + 50
+ALT_COL_6 = COL_6 + 50
+ALT_COL_7 = COL_7 + 50
+ALT_COL_8 = COL_8 + 50
+
+card_1 = Cards(COL_1, ROW_1)
+card_2 = Cards(COL_2, ROW_1)
+card_3 = Cards(COL_3, ROW_1)
+card_4 = Cards(COL_4, ROW_1)
+card_5 = Cards(COL_5, ROW_1)
+card_6 = Cards(COL_6, ROW_1)
+card_7 = Cards(COL_7, ROW_1)
+card_8 = Cards(COL_8, ROW_1)
+card_9 = Cards(COL_1, ROW_2)
+card_10 = Cards(COL_2, ROW_2)
+card_11 = Cards(COL_3, ROW_2)
+card_12 = Cards(COL_4, ROW_2)
+card_13 = Cards(COL_5, ROW_2)
+card_14 = Cards(COL_6, ROW_2)
+card_15 = Cards(COL_7, ROW_2)
+card_16 = Cards(COL_8, ROW_2)
+card_17 = Cards(COL_1, ROW_3)
+card_18 = Cards(COL_2, ROW_3)
+card_19 = Cards(COL_3, ROW_3)
+card_20 = Cards(COL_4, ROW_3)
+card_21 = Cards(COL_5, ROW_3)
+card_22 = Cards(COL_6, ROW_3)
+card_23 = Cards(COL_7, ROW_3)
+card_24 = Cards(COL_8, ROW_3)
+card_25 = Cards(COL_1, ROW_4)
+card_26 = Cards(COL_2, ROW_4)
+card_27 = Cards(COL_3, ROW_4)
+card_28 = Cards(COL_4, ROW_4)
+card_29 = Cards(COL_5, ROW_4)
+card_30 = Cards(COL_6, ROW_4)
+card_31 = Cards(COL_7, ROW_4)
+card_32 = Cards(COL_8, ROW_4)
+card_33 = Cards(COL_1, ROW_5)
+card_34 = Cards(COL_2, ROW_5)
+card_35 = Cards(COL_3, ROW_5)
+card_36 = Cards(COL_4, ROW_5)
+card_37 = Cards(COL_5, ROW_5)
+card_38 = Cards(COL_6, ROW_5)
+card_39 = Cards(COL_7, ROW_5)
+card_40 = Cards(COL_8, ROW_5)
+card_41 = Cards(COL_1, ROW_6)
+card_42 = Cards(COL_2, ROW_6)
+card_43 = Cards(COL_3, ROW_6)
+card_44 = Cards(COL_4, ROW_6)
+card_45 = Cards(COL_5, ROW_6)
+card_46 = Cards(COL_6, ROW_6)
+card_47 = Cards(COL_7, ROW_6)
+card_48 = Cards(COL_8, ROW_6)
+card_49 = Cards(COL_1, ROW_7)
+card_50 = Cards(COL_2, ROW_7)
+card_51 = Cards(COL_3, ROW_7)
+card_52 = Cards(COL_4, ROW_7)
+card_53 = Cards(COL_5, ROW_7)
+card_54 = Cards(COL_6, ROW_7)
+card_55 = Cards(COL_7, ROW_7)
+card_56 = Cards(COL_8, ROW_7)
+
+card_list = [card_1, card_2, card_3, card_4, card_5, card_6, card_7, card_8, card_9, card_10, card_11, card_12, card_13,
+             card_14, card_15, card_16, card_17, card_18, card_19, card_20, card_21, card_22, card_23, card_24, card_25,
+             card_26, card_27, card_28, card_29, card_30, card_31, card_32, card_33, card_34, card_35, card_36, card_37,
+             card_38, card_39, card_40, card_41, card_42, card_43, card_44, card_45, card_46, card_47, card_48, card_49,
+             card_50, card_51, card_52]
+
+# Generate a letter for each card
+
+random.shuffle(alphabet_list)
+random.shuffle(card_list)
+for entries in range(0, 52):
+    card_list[entries].letter = alphabet_list[entries]
+
+for item in card_list:
+    item.draw_card()
+
+pygame.display.update()
+game_running = True
+choices = []
+while game_running:
+    ev = pygame.event.get()
+    for event in ev:
+        if len(card_list) == 0:
+            pygame.draw.rect(game_window, (0, 0, 255), (100, 200, 1300, 500))
+            grats_text = end_font.render("Congratulations!", True, (0, 0, 0), )
+            ending_text = end_font.render(f"Attempt count:", True, (0, 0, 0), )
+            game_window.blit(grats_text, (310, 200))
+            game_window.blit(ending_text, (190, 450))
+        if flip_count == 2:
+            time.sleep(1)
+            for item in card_list:
+                if item.clicked:
+                    choices.append(item)
+            if choices[0].letter.lower() == choices[1].letter.lower():
+                card_list.remove(choices[0])
+                card_list.remove(choices[1])
+            for item in card_list:
+                item.draw_card()
+                item.clicked = False
+            choices = []
+            flip_count = 0
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            for item in card_list:
+                if item.rect.collidepoint(event.pos):
+                    if not item.clicked:
+                        item.flip_card()
+                        item.clicked = True
+            else:
+                pass
+        elif event.type == pygame.QUIT:
+            game_running = False
+        pygame.display.update()
+
+#TODO
+# add the attempt count
+# add a border to the cards
+# change colors
