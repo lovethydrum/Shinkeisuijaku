@@ -6,14 +6,13 @@ import random
 pygame.init()
 info = pygame.display.Info()
 screen_width, screen_height = info.current_w, info.current_h
-window_width, window_height = screen_width - 365, screen_height - 50
+window_width, window_height = screen_width - 265, screen_height - 50
 game_window = pygame.display.set_mode((window_width, window_height))
 pygame.display.set_caption("Memory Game")
 
 white_surface = pygame.Surface((6000, 6000))
 white_surface.fill((239, 222, 205))
 game_window.fill((255, 255, 255))
-# Beige (244, 226, 198)
 
 game_window.blit(white_surface, (0, 0))
 
@@ -27,6 +26,7 @@ alphabet_list = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M"
                  "v", "w", "x", "y", "z"]
 
 BLACK = (0, 0, 0)
+RED = (255, 0, 0)
 
 
 class Cards:
@@ -156,6 +156,79 @@ card_list = [card_1, card_2, card_3, card_4, card_5, card_6, card_7, card_8, car
              card_38, card_39, card_40, card_41, card_42, card_43, card_44, card_45, card_46, card_47, card_48, card_49,
              card_50, card_51, card_52]
 
+
+class Players:
+    def __init__(self, name, y):
+        self.score = 0
+        self.name = name
+        self.x = 1340
+        self.y = y
+        self.box_width = 300
+        self.box_height = 180
+        self.letter_bank = ""
+        self.letter_bank_2 = ""
+        self.letter_bank_3 = ""
+        self.letter_bank_4 = ""
+        self.letter_bank_5 = ""
+
+    def increase_score(self):
+        self.score = self.score + 1
+        if self.score <= 6:
+            self.letter_bank = self.letter_bank + choices[0].letter.upper() + ", "
+        elif self.score <= 12:
+            self.letter_bank_2 = self.letter_bank_2 + choices[0].letter.upper() + ", "
+        elif self.score <= 18:
+            self.letter_bank_3 = self.letter_bank_3 + choices[0].letter.upper() + ", "
+        elif self.score <= 24:
+            self.letter_bank_4 = self.letter_bank_4 + choices[0].letter.upper() + ", "
+        else:
+            self.letter_bank_5 = self.letter_bank_5 + choices[0].letter.upper() + ", "
+        pygame.draw.rect(game_window, (255, 255, 255), (self.x, self.y, self.box_width, self.box_height))
+        pygame.draw.rect(game_window, BLACK, (self.x, self.y, self.box_width, self.box_height), 5)
+        bank_letters = font.render(f"{self.letter_bank}", True, (0, 0, 0), )
+        game_window.blit(bank_letters, (self.x + 13, self.y))
+        bank_letters_2 = font.render(f"{self.letter_bank_2}", True, (0, 0, 0), )
+        game_window.blit(bank_letters_2, (self.x + 13, self.y + 35))
+        bank_letters_3 = font.render(f"{self.letter_bank_3}", True, (0, 0, 0), )
+        game_window.blit(bank_letters_3, (self.x + 13, self.y + 70))
+        bank_letters_4 = font.render(f"{self.letter_bank_4}", True, (0, 0, 0), )
+        game_window.blit(bank_letters_4, (self.x + 13, self.y + 105))
+        bank_letters_5 = font.render(f"{self.letter_bank_5}", True, (0, 0, 0), )
+        game_window.blit(bank_letters_5, (self.x + 13, self.y + 140))
+
+
+def generate_players(list_of_players):
+    for players in list_of_players:
+        player_font = font.render(f"{players.name}:  {players.score}", True, (0, 0, 0), )
+        game_window.blit(player_font, (players.x, players.y - 49))
+        pygame.draw.rect(game_window, (255, 255, 255), (players.x, players.y, players.box_width, players.box_height))
+        pygame.draw.rect(game_window, BLACK, (players.x, players.y, players.box_width, players.box_height), 5)
+        bank_letters = font.render(f"{players.letter_bank}", True, (0, 0, 0), )
+        game_window.blit(bank_letters, (players.x + 13, players.y))
+        bank_letters_2 = font.render(f"{players.letter_bank_2}", True, (0, 0, 0), )
+        game_window.blit(bank_letters_2, (players.x + 13, players.y + 35))
+        bank_letters_3 = font.render(f"{players.letter_bank_3}", True, (0, 0, 0), )
+        game_window.blit(bank_letters_3, (players.x + 13, players.y + 70))
+        bank_letters_4 = font.render(f"{players.letter_bank_4}", True, (0, 0, 0), )
+        game_window.blit(bank_letters_4, (players.x + 13, players.y + 105))
+        bank_letters_5 = font.render(f"{players.letter_bank_5}", True, (0, 0, 0), )
+        game_window.blit(bank_letters_5, (players.x + 13, players.y + 140))
+
+
+# Create players
+current_player = 0
+
+player_1 = Players("Player 1", 55)
+player_2 = Players("Player 2", 300)
+player_3 = Players("Player 3", 550)
+player_4 = Players("Player 4", 800)
+
+player_list = [player_1, player_2, player_3, player_4]
+
+
+generate_players(player_list)
+
+
 # Generate a letter for each card
 random.shuffle(alphabet_list)
 random.shuffle(card_list)
@@ -170,41 +243,67 @@ game_running = True
 choices = []
 while game_running:
     ev = pygame.event.get()
+    pygame.display.update()
+    # Current Player Display
+    if current_player == 0:
+        pygame.draw.rect(game_window, RED, (1335, 5, 145, 48), 5)
+    elif current_player == 1:
+        pygame.draw.rect(game_window, RED, (1335, 250, 148, 48), 5)
+    elif current_player == 2:
+        pygame.draw.rect(game_window, RED, (1335, 500, 148, 48), 5)
+    elif current_player == 3:
+        pygame.draw.rect(game_window, RED, (1335, 750, 148, 48), 5)
     for event in ev:
+        # Game Completion Prompt
         if len(card_list) == 0:
+            # high_score = 0
+            # for person in player_list:
+            #     if person.score > high_score:
+            #         high_score = person.score
+            # for person in player_list:
+            #     if person.score == high_score:
+            #         winner = person.name
             pygame.draw.rect(game_window, (0, 0, 255), (100, 200, 1300, 500))
             congratulations_text = end_font.render("Congratulations!", True, (0, 0, 0), )
-            ending_text = end_font.render(f"Attempt count:  {attempt_count}", True, (0, 0, 0), )
+            ending_text = end_font.render(f"Total attempts:  {attempt_count}", True, (0, 0, 0), )
             game_window.blit(congratulations_text, (310, 200))
             game_window.blit(ending_text, (190, 450))
+        # Player makes their selections
         if flip_count == 2:
             time.sleep(1)
             attempt_count = increase_attempt_count()
             for item in card_list:
                 if item.clicked:
                     choices.append(item)
+        # The choice is good!
             if choices[0].letter.lower() == choices[1].letter.lower():
+                player_list[current_player].increase_score()
                 card_list.remove(choices[0])
                 card_list.remove(choices[1])
+        # The choice is not so good...
+            elif choices[0].letter.lower() != choices[1].letter.lower():
+                current_player = current_player + 1
+                if current_player == 4:
+                    current_player = 0
+            game_window.blit(white_surface, (0, 0))
+            generate_players(player_list)
             for item in card_list:
                 item.draw_card()
                 item.clicked = False
             choices = []
             flip_count = 0
+        # Click a card
         if event.type == pygame.MOUSEBUTTONDOWN:
             for item in card_list:
                 if item.rect.collidepoint(event.pos):
                     if not item.clicked:
                         item.flip_card()
                         item.clicked = True
-            else:
-                pass
+                else:
+                    pass
         elif event.type == pygame.QUIT:
             game_running = False
         pygame.display.update()
-
+    pygame.display.update()
 # TODO
-# choose player count
-# create player boxes on the right
-# if you guess correctly, your letter goes into your player box and your score goes up
-# shinkeisuijaku rules = continue until you make a mistake
+# add winner's name
