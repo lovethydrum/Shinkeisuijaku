@@ -6,13 +6,14 @@ import random
 pygame.init()
 info = pygame.display.Info()
 screen_width, screen_height = info.current_w, info.current_h
-window_width, window_height = screen_width - 565, screen_height - 50
+window_width, window_height = screen_width - 365, screen_height - 50
 game_window = pygame.display.set_mode((window_width, window_height))
 pygame.display.set_caption("Memory Game")
 
 white_surface = pygame.Surface((6000, 6000))
-white_surface.fill((244, 226, 198))
+white_surface.fill((239, 222, 205))
 game_window.fill((255, 255, 255))
+# Beige (244, 226, 198)
 
 game_window.blit(white_surface, (0, 0))
 
@@ -27,10 +28,11 @@ alphabet_list = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M"
 
 BLACK = (0, 0, 0)
 
+
 class Cards:
     def __init__(self, x, y):
-        self.color = (255, 0, 0)
-        self.lower_color = (0, 0, 255)
+        self.color = (255, 105, 97)
+        self.lower_color = (124, 185, 232)
         self.x = x
         self.y = y
         self.letter = ""
@@ -58,10 +60,13 @@ class Cards:
 
 
 attempt_count = 0
+
+
 def increase_attempt_count():
     return attempt_count + 1
 
-# Y coords
+
+# Y coordinates
 ROW_1 = 15
 ROW_2 = ROW_1 + 125
 ROW_3 = ROW_2 + 125
@@ -71,7 +76,7 @@ ROW_6 = ROW_5 + 125
 ROW_7 = ROW_6 + 125
 ROW_8 = ROW_7 + 125
 
-# X coords
+# X coordinates
 COL_1 = 25
 COL_2 = COL_1 + 200
 COL_3 = COL_2 + 200
@@ -81,7 +86,7 @@ COL_6 = COL_5 + 200
 COL_7 = COL_6 + 200
 COL_8 = COL_7 + 200
 
-# Alternate X coords for rows with 6
+# Alternate X coordinates for rows with 6
 ALT_COL_1 = COL_1 + 100
 ALT_COL_2 = COL_2 + 100
 ALT_COL_3 = COL_3 + 100
@@ -168,9 +173,9 @@ while game_running:
     for event in ev:
         if len(card_list) == 0:
             pygame.draw.rect(game_window, (0, 0, 255), (100, 200, 1300, 500))
-            grats_text = end_font.render("Congratulations!", True, (0, 0, 0), )
+            congratulations_text = end_font.render("Congratulations!", True, (0, 0, 0), )
             ending_text = end_font.render(f"Attempt count:  {attempt_count}", True, (0, 0, 0), )
-            game_window.blit(grats_text, (310, 200))
+            game_window.blit(congratulations_text, (310, 200))
             game_window.blit(ending_text, (190, 450))
         if flip_count == 2:
             time.sleep(1)
@@ -198,8 +203,8 @@ while game_running:
             game_running = False
         pygame.display.update()
 
-#TODO
-# change colors
-# consider game modes
-# choose player count, and have a diff color scheme for each player
-# display score
+# TODO
+# choose player count
+# create player boxes on the right
+# if you guess correctly, your letter goes into your player box and your score goes up
+# shinkeisuijaku rules = continue until you make a mistake
