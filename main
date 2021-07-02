@@ -1,6 +1,9 @@
 import pygame
 import time
 import random
+# Code to avoid scaling! #
+import ctypes
+ctypes.windll.user32.SetProcessDPIAware()
 
 # Create game windows
 pygame.init()
@@ -9,12 +12,11 @@ screen_width, screen_height = info.current_w, info.current_h
 window_width, window_height = screen_width - 265, screen_height - 50
 game_window = pygame.display.set_mode((window_width, window_height))
 pygame.display.set_caption("Memory Game")
+cream_surface = pygame.Surface((6000, 6000))
+cream_surface.fill((239, 222, 205))
+# game_window.fill((255, 255, 255))
 
-white_surface = pygame.Surface((6000, 6000))
-white_surface.fill((239, 222, 205))
-game_window.fill((255, 255, 255))
-
-game_window.blit(white_surface, (0, 0))
+game_window.blit(cream_surface, (0, 0))
 
 font = pygame.font.Font('MitsuEHandwriting-R.otf', 30)
 end_font = pygame.font.Font('MitsuEHandwriting-R.otf', 100)
@@ -54,7 +56,7 @@ class Cards:
         pygame.draw.rect(game_window, self.clicked_color, (self.x, self.y, self.width, self.height))
         pygame.draw.rect(game_window, BLACK, (self.x, self.y, self.width, self.height), 4)
         reveal_letter = font.render(self.letter, True, (0, 0, 0), )
-        game_window.blit(reveal_letter, (self.x + 50, self.y + 40))
+        game_window.blit(reveal_letter, (self.x + 45, self.y + 40))
         global flip_count
         flip_count += 1
 
@@ -149,7 +151,6 @@ card_50 = Cards(ALT_COL_4, ROW_8)
 card_51 = Cards(ALT_COL_5, ROW_8)
 card_52 = Cards(ALT_COL_6, ROW_8)
 
-
 card_list = [card_1, card_2, card_3, card_4, card_5, card_6, card_7, card_8, card_9, card_10, card_11, card_12, card_13,
              card_14, card_15, card_16, card_17, card_18, card_19, card_20, card_21, card_22, card_23, card_24, card_25,
              card_26, card_27, card_28, card_29, card_30, card_31, card_32, card_33, card_34, card_35, card_36, card_37,
@@ -217,6 +218,7 @@ def generate_players(list_of_players):
 
 # Create players
 current_player = 0
+player_count = 1
 
 player_1 = Players("Player 1", 55)
 player_2 = Players("Player 2", 300)
@@ -240,70 +242,123 @@ for item in card_list:
 
 pygame.display.update()
 game_running = True
+game_state = "selection"
 choices = []
 while game_running:
     ev = pygame.event.get()
     pygame.display.update()
-    # Current Player Display
-    if current_player == 0:
-        pygame.draw.rect(game_window, RED, (1335, 5, 145, 48), 5)
-    elif current_player == 1:
-        pygame.draw.rect(game_window, RED, (1335, 250, 148, 48), 5)
-    elif current_player == 2:
-        pygame.draw.rect(game_window, RED, (1335, 500, 148, 48), 5)
-    elif current_player == 3:
-        pygame.draw.rect(game_window, RED, (1335, 750, 148, 48), 5)
-    for event in ev:
-        # Game Completion Prompt
-        if len(card_list) == 0:
-            # high_score = 0
-            # for person in player_list:
-            #     if person.score > high_score:
-            #         high_score = person.score
-            # for person in player_list:
-            #     if person.score == high_score:
-            #         winner = person.name
-            pygame.draw.rect(game_window, (0, 0, 255), (100, 200, 1300, 500))
-            congratulations_text = end_font.render("Congratulations!", True, (0, 0, 0), )
-            ending_text = end_font.render(f"Total attempts:  {attempt_count}", True, (0, 0, 0), )
-            game_window.blit(congratulations_text, (310, 200))
-            game_window.blit(ending_text, (190, 450))
-        # Player makes their selections
-        if flip_count == 2:
-            time.sleep(1)
-            attempt_count = increase_attempt_count()
-            for item in card_list:
-                if item.clicked:
-                    choices.append(item)
-        # The choice is good!
-            if choices[0].letter.lower() == choices[1].letter.lower():
-                player_list[current_player].increase_score()
-                card_list.remove(choices[0])
-                card_list.remove(choices[1])
-        # The choice is not so good...
-            elif choices[0].letter.lower() != choices[1].letter.lower():
-                current_player = current_player + 1
-                if current_player == 4:
-                    current_player = 0
-            game_window.blit(white_surface, (0, 0))
-            generate_players(player_list)
-            for item in card_list:
-                item.draw_card()
-                item.clicked = False
-            choices = []
-            flip_count = 0
-        # Click a card
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            for item in card_list:
-                if item.rect.collidepoint(event.pos):
-                    if not item.clicked:
-                        item.flip_card()
-                        item.clicked = True
-                else:
-                    pass
-        elif event.type == pygame.QUIT:
-            game_running = False
-        pygame.display.update()
+# Game state
+    if game_state == "selection":
+        pygame.draw.rect(game_window, (127, 255, 127), (200, 200, 1300, 500))
+        pygame.draw.rect(game_window, BLACK, (200, 200, 1300, 500), 7)
+
+        single = Cards(330, 500)
+        double = Cards(630, 500)
+        triple = Cards(930, 500)
+        quadruple = Cards(1230, 500)
+        selection_list = [single, double, triple, quadruple]
+        selection_text = end_font.render("How many Players?", True, (0, 0, 0), )
+        one_text = font.render("ONE", True, (0, 0, 0), )
+        two_text = font.render("TWO", True, (0, 0, 0), )
+        three_text = font.render("THREE", True, (0, 0, 0), )
+        four_text = font.render("FOUR", True, (0, 0, 0), )
+        game_window.blit(selection_text, (340, 200))
+        game_window.blit(one_text, (342, 450))
+        game_window.blit(two_text, (638, 450))
+        game_window.blit(three_text, (923, 450))
+        game_window.blit(four_text, (1232, 450))
+        for items in selection_list:
+            items.draw_card()
+        for event in ev:
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if single.rect.collidepoint(event.pos):
+                    player_list.remove(player_2)
+                    player_list.remove(player_3)
+                    player_list.remove(player_4)
+                    game_state = "game"
+                    game_window.blit(cream_surface, (0, 0))
+                    generate_players(player_list)
+                    for item in card_list:
+                        item.draw_card()
+                if double.rect.collidepoint(event.pos):
+                    player_list.remove(player_3)
+                    player_list.remove(player_4)
+                    player_count = 2
+                    game_state = "game"
+                    game_window.blit(cream_surface, (0, 0))
+                    generate_players(player_list)
+                    for item in card_list:
+                        item.draw_card()
+                if triple.rect.collidepoint(event.pos):
+                    player_list.remove(player_4)
+                    player_count = 3
+                    game_state = "game"
+                    game_window.blit(cream_surface, (0, 0))
+                    generate_players(player_list)
+                    for item in card_list:
+                        item.draw_card()
+                if quadruple.rect.collidepoint(event.pos):
+                    player_count = 4
+                    game_state = "game"
+                    game_window.blit(cream_surface, (0, 0))
+                    generate_players(player_list)
+                    for item in card_list:
+                        item.draw_card()
+# Game state end
+    elif game_state == "game":
+        # Current Player Display
+        if current_player == 0:
+            pygame.draw.rect(game_window, RED, (1335, 5, 145, 48), 5)
+        elif current_player == 1:
+            pygame.draw.rect(game_window, RED, (1335, 250, 148, 48), 5)
+        elif current_player == 2:
+            pygame.draw.rect(game_window, RED, (1335, 500, 148, 48), 5)
+        elif current_player == 3:
+            pygame.draw.rect(game_window, RED, (1335, 750, 148, 48), 5)
+        for event in ev:
+            # Game Completion Prompt
+            if len(card_list) == 0:
+                pygame.draw.rect(game_window, (0, 0, 255), (100, 200, 1300, 500))
+                congratulations_text = end_font.render("Congratulations!", True, (0, 0, 0), )
+                ending_text = end_font.render(f"Total attempts:  {attempt_count}", True, (0, 0, 0), )
+                game_window.blit(congratulations_text, (310, 200))
+                game_window.blit(ending_text, (190, 450))
+            # Player makes their selections
+            if flip_count == 2:
+                time.sleep(1)
+                attempt_count = increase_attempt_count()
+                for item in card_list:
+                    if item.clicked:
+                        choices.append(item)
+            # The choice is good!
+                if choices[0].letter.lower() == choices[1].letter.lower():
+                    player_list[current_player].increase_score()
+                    card_list.remove(choices[0])
+                    card_list.remove(choices[1])
+            # The choice is not so good...
+                elif choices[0].letter.lower() != choices[1].letter.lower():
+                    current_player = current_player + 1
+                    if current_player == player_count:
+                        current_player = 0
+                game_window.blit(cream_surface, (0, 0))
+                generate_players(player_list)
+                for item in card_list:
+                    item.draw_card()
+                    item.clicked = False
+                choices = []
+                flip_count = 0
+            # Click a card
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                for item in card_list:
+                    if item.rect.collidepoint(event.pos):
+                        if not item.clicked:
+                            item.flip_card()
+                            item.clicked = True
+                    else:
+                        pass
+            elif event.type == pygame.QUIT:
+                game_running = False
+            pygame.display.update()
     pygame.display.update()
 # TODO
 # add winner's name
