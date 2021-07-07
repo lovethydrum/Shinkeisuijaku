@@ -19,13 +19,12 @@ cream_surface.fill((239, 222, 205))
 game_window.blit(cream_surface, (0, 0))
 
 font = pygame.font.Font('MitsuEHandwriting-R.otf', 30)
+big_font = pygame.font.Font('MitsuEHandwriting-R.otf', 50)
 end_font = pygame.font.Font('MitsuEHandwriting-R.otf', 100)
 flip_count = 0
-alphabet_list = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T",
-                 "U",
-                 "V", "W", "X", "Y", "Z", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o",
-                 "p", "q", "r", "s", "t", "u",
-                 "v", "w", "x", "y", "z"]
+alphabet_list = ["A", "a", "B", "b", "C", "c", "D", "d", "E", "e", "F", "f", "G", "g", "H", "h", "I", "i", "J", "j",
+                 "K", "k", "L", "l", "M", "m", "N", "n", "O", "o", "P", "p", "Q", "q", "R", "r", "S", "s", "T", "t",
+                 "U", "u", "V", "v", "W", "w", "X", "x", "Y", "y", "Z", "z"]
 
 BLACK = (0, 0, 0)
 RED = (255, 0, 0)
@@ -33,14 +32,15 @@ RED = (255, 0, 0)
 
 class Cards:
     def __init__(self, x, y):
-        self.color = (255, 105, 97)
-        self.lower_color = (124, 185, 232)
+        self.lower_color = (255, 105, 97)
+        self.color = (124, 185, 232)
         self.x = x
         self.y = y
         self.letter = ""
         self.width = 100
         self.height = 120
         self.clicked_color = (211, 211, 211)
+        self.highlight = (100, 100, 100)
         self.clicked = False
         self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
 
@@ -52,11 +52,20 @@ class Cards:
             pygame.draw.rect(game_window, self.color, (self.x, self.y, self.width, self.height))
             pygame.draw.rect(game_window, BLACK, (self.x, self.y, self.width, self.height), 4)
 
+    def highlight_effect(self):
+        if not self.clicked:
+            pygame.draw.rect(game_window, self.highlight, (self.x, self.y, self.width, self.height))
+            pygame.draw.rect(game_window, BLACK, (self.x, self.y, self.width, self.height), 4)
+
     def flip_card(self):
         pygame.draw.rect(game_window, self.clicked_color, (self.x, self.y, self.width, self.height))
         pygame.draw.rect(game_window, BLACK, (self.x, self.y, self.width, self.height), 4)
-        reveal_letter = font.render(self.letter, True, (0, 0, 0), )
-        game_window.blit(reveal_letter, (self.x + 45, self.y + 40))
+        if self.letter.isupper():
+            reveal_letter = big_font.render(self.letter, True, (0, 0, 0), )
+            game_window.blit(reveal_letter, (self.x+32, self.y + 30))
+        else:
+            reveal_letter = font.render(self.letter, True, (0, 0, 0), )
+            game_window.blit(reveal_letter, (self.x + 45, self.y + 40))
         global flip_count
         flip_count += 1
 
@@ -230,25 +239,457 @@ player_list = [player_1, player_2, player_3, player_4]
 
 generate_players(player_list)
 
-
-# Generate a letter for each card
-random.shuffle(alphabet_list)
-random.shuffle(card_list)
 for entries in range(0, 52):
     card_list[entries].letter = alphabet_list[entries]
 
-for item in card_list:
-    item.draw_card()
+a_selection_card = Cards(90, 300)
+b_selection_card = Cards(200, 300)
+c_selection_card = Cards(310, 300)
+d_selection_card = Cards(420, 300)
+e_selection_card = Cards(530, 300)
+f_selection_card = Cards(640, 300)
+g_selection_card = Cards(750, 300)
+h_selection_card = Cards(860, 300)
+i_selection_card = Cards(970, 300)
+j_selection_card = Cards(1080, 300)
+k_selection_card = Cards(1190, 300)
+l_selection_card = Cards(1300, 300)
+m_selection_card = Cards(1410, 300)
+n_selection_card = Cards(90, 500)
+o_selection_card = Cards(200, 500)
+p_selection_card = Cards(310, 500)
+q_selection_card = Cards(420, 500)
+r_selection_card = Cards(530, 500)
+s_selection_card = Cards(640, 500)
+t_selection_card = Cards(750, 500)
+u_selection_card = Cards(860, 500)
+v_selection_card = Cards(970, 500)
+w_selection_card = Cards(1080, 500)
+x_selection_card = Cards(1190, 500)
+y_selection_card = Cards(1300, 500)
+z_selection_card = Cards(1410, 500)
+selection_list = [a_selection_card, b_selection_card, c_selection_card, d_selection_card, e_selection_card,
+                  f_selection_card, g_selection_card, h_selection_card, i_selection_card, j_selection_card,
+                  k_selection_card, l_selection_card, m_selection_card, n_selection_card, o_selection_card,
+                  p_selection_card, q_selection_card, r_selection_card, s_selection_card, t_selection_card,
+                  u_selection_card, v_selection_card, w_selection_card, x_selection_card, y_selection_card,
+                  z_selection_card]
+
+
+def menu_text():
+    range_text = end_font.render("Choose range", True, (0, 0, 0), )
+    a_text = font.render("A", True, (0, 0, 0), )
+    b_text = font.render("B", True, (0, 0, 0), )
+    c_text = font.render("C", True, (0, 0, 0), )
+    d_text = font.render("D", True, (0, 0, 0), )
+    e_text = font.render("E", True, (0, 0, 0), )
+    f_text = font.render("F", True, (0, 0, 0), )
+    g_text = font.render("G", True, (0, 0, 0), )
+    h_text = font.render("H", True, (0, 0, 0), )
+    i_text = font.render("I", True, (0, 0, 0), )
+    j_text = font.render("J", True, (0, 0, 0), )
+    k_text = font.render("K", True, (0, 0, 0), )
+    l_text = font.render("L", True, (0, 0, 0), )
+    m_text = font.render("M", True, (0, 0, 0), )
+    n_text = font.render("N", True, (0, 0, 0), )
+    o_text = font.render("O", True, (0, 0, 0), )
+    p_text = font.render("P", True, (0, 0, 0), )
+    q_text = font.render("Q", True, (0, 0, 0), )
+    r_text = font.render("R", True, (0, 0, 0), )
+    s_text = font.render("S", True, (0, 0, 0), )
+    t_text = font.render("T", True, (0, 0, 0), )
+    u_text = font.render("U", True, (0, 0, 0), )
+    v_text = font.render("V", True, (0, 0, 0), )
+    w_text = font.render("W", True, (0, 0, 0), )
+    x_text = font.render("X", True, (0, 0, 0), )
+    y_text = font.render("Y", True, (0, 0, 0), )
+    z_text = font.render("Z", True, (0, 0, 0), )
+
+    game_window.blit(range_text, (450, 50))
+    game_window.blit(a_text, (130, 250))
+    game_window.blit(b_text, (240, 250))
+    game_window.blit(c_text, (350, 250))
+    game_window.blit(d_text, (460, 250))
+    game_window.blit(e_text, (570, 250))
+    game_window.blit(f_text, (680, 250))
+    game_window.blit(g_text, (790, 250))
+    game_window.blit(h_text, (900, 250))
+    game_window.blit(i_text, (1010, 250))
+    game_window.blit(j_text, (1120, 250))
+    game_window.blit(k_text, (1230, 250))
+    game_window.blit(l_text, (1340, 250))
+    game_window.blit(m_text, (1450, 250))
+    game_window.blit(n_text, (130, 450))
+    game_window.blit(o_text, (240, 450))
+    game_window.blit(p_text, (350, 450))
+    game_window.blit(q_text, (460, 450))
+    game_window.blit(r_text, (570, 450))
+    game_window.blit(s_text, (680, 450))
+    game_window.blit(t_text, (790, 450))
+    game_window.blit(u_text, (900, 450))
+    game_window.blit(v_text, (1010, 450))
+    game_window.blit(w_text, (1120, 450))
+    game_window.blit(x_text, (1230, 450))
+    game_window.blit(y_text, (1340, 450))
+    game_window.blit(z_text, (1450, 450))
+
 
 pygame.display.update()
 game_running = True
-game_state = "selection"
+game_state = "range: start"
 choices = []
+cut_range = 0
 while game_running:
     ev = pygame.event.get()
     pygame.display.update()
+    if game_state == "range: start":
+        pygame.draw.rect(game_window, (127, 255, 127), (30, 30, 1600, 900))
+        pygame.draw.rect(game_window, BLACK, (30, 30, 1600, 900), 7)
+        for items in selection_list:
+            items.draw_card()
+        menu_text()
+        for event in ev:
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if a_selection_card.rect.collidepoint(event.pos):
+                    selection_list = selection_list[1:]
+                    cut_range = 0
+                    game_state = "range: end"
+                if b_selection_card.rect.collidepoint(event.pos):
+                    selection_list = selection_list[2:]
+                    cut_range = 2
+                    game_state = "range: end"
+                if c_selection_card.rect.collidepoint(event.pos):
+                    selection_list = selection_list[3:]
+                    cut_range = 4
+                    game_state = "range: end"
+                if d_selection_card.rect.collidepoint(event.pos):
+                    selection_list = selection_list[4:]
+                    cut_range = 6
+                    game_state = "range: end"
+                if e_selection_card.rect.collidepoint(event.pos):
+                    selection_list = selection_list[5:]
+                    cut_range = 8
+                    game_state = "range: end"
+                if f_selection_card.rect.collidepoint(event.pos):
+                    selection_list = selection_list[6:]
+                    cut_range = 10
+                    game_state = "range: end"
+                if g_selection_card.rect.collidepoint(event.pos):
+                    selection_list = selection_list[7:]
+                    cut_range = 12
+                    game_state = "range: end"
+                if h_selection_card.rect.collidepoint(event.pos):
+                    selection_list = selection_list[8:]
+                    cut_range = 14
+                    game_state = "range: end"
+                if i_selection_card.rect.collidepoint(event.pos):
+                    selection_list = selection_list[9:]
+                    cut_range = 16
+                    game_state = "range: end"
+                if j_selection_card.rect.collidepoint(event.pos):
+                    selection_list = selection_list[10:]
+                    cut_range = 18
+                    game_state = "range: end"
+                if k_selection_card.rect.collidepoint(event.pos):
+                    selection_list = selection_list[11:]
+                    cut_range = 20
+                    game_state = "range: end"
+                if l_selection_card.rect.collidepoint(event.pos):
+                    selection_list = selection_list[12:]
+                    cut_range = 22
+                    game_state = "range: end"
+                if m_selection_card.rect.collidepoint(event.pos):
+                    selection_list = selection_list[13:]
+                    cut_range = 24
+                    game_state = "range: end"
+                if n_selection_card.rect.collidepoint(event.pos):
+                    selection_list = selection_list[14:]
+                    cut_range = 26
+                    game_state = "range: end"
+                if o_selection_card.rect.collidepoint(event.pos):
+                    selection_list = selection_list[15:]
+                    cut_range = 28
+                    game_state = "range: end"
+                if p_selection_card.rect.collidepoint(event.pos):
+                    selection_list = selection_list[16:]
+                    cut_range = 30
+                    game_state = "range: end"
+                if q_selection_card.rect.collidepoint(event.pos):
+                    selection_list = selection_list[17:]
+                    cut_range = 32
+                    game_state = "range: end"
+                if r_selection_card.rect.collidepoint(event.pos):
+                    selection_list = selection_list[18:]
+                    cut_range = 34
+                    game_state = "range: end"
+                if s_selection_card.rect.collidepoint(event.pos):
+                    selection_list = selection_list[19:]
+                    cut_range = 36
+                    game_state = "range: end"
+                if t_selection_card.rect.collidepoint(event.pos):
+                    selection_list = selection_list[20:]
+                    cut_range = 38
+                    game_state = "range: end"
+                if u_selection_card.rect.collidepoint(event.pos):
+                    selection_list = selection_list[21:]
+                    cut_range = 40
+                    game_state = "range: end"
+                if v_selection_card.rect.collidepoint(event.pos):
+                    selection_list = selection_list[22:]
+                    cut_range = 42
+                    game_state = "range: end"
+                if w_selection_card.rect.collidepoint(event.pos):
+                    selection_list = selection_list[23:]
+                    cut_range = 44
+                    game_state = "range: end"
+                if x_selection_card.rect.collidepoint(event.pos):
+                    selection_list = selection_list[24:]
+                    cut_range = 46
+                    game_state = "range: end"
+                if y_selection_card.rect.collidepoint(event.pos):
+                    selection_list = selection_list[25:]
+                    cut_range = 50
+                    game_state = "range: end"
+                if z_selection_card.rect.collidepoint(event.pos):
+                    selection_list = selection_list[26:]
+                    cut_range = 52
+                    game_state = "range: end"
 # Game state
-    if game_state == "selection":
+    elif game_state == "range: end":
+        pygame.draw.rect(game_window, (127, 255, 127), (30, 30, 1600, 900))
+        pygame.draw.rect(game_window, BLACK, (30, 30, 1600, 900), 7)
+
+        for items in selection_list:
+            items.draw_card()
+        menu_text()
+        for event in ev:
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if b_selection_card.rect.collidepoint(event.pos):
+                    selection_list = selection_list[1:]
+                    alphabet_list = alphabet_list[:4]
+                    card_list = card_list[:4]
+                    random.shuffle(alphabet_list)
+                    random.shuffle(card_list)
+                    for entries in range(0, len(alphabet_list)):
+                        card_list[entries].letter = alphabet_list[entries]
+                    game_state = "selection"
+                if c_selection_card.rect.collidepoint(event.pos):
+                    selection_list = selection_list[2:]
+                    alphabet_list = alphabet_list[cut_range:6]
+                    card_list = card_list[:(6-cut_range)]
+                    random.shuffle(alphabet_list)
+                    random.shuffle(card_list)
+                    for entries in range(0, len(alphabet_list)):
+                        card_list[entries].letter = alphabet_list[entries]
+                    game_state = "selection"
+                if d_selection_card.rect.collidepoint(event.pos):
+                    selection_list = selection_list[3:]
+                    alphabet_list = alphabet_list[cut_range:8]
+                    card_list = card_list[:(8-cut_range)]
+                    random.shuffle(alphabet_list)
+                    random.shuffle(card_list)
+                    for entries in range(0, len(alphabet_list)):
+                        card_list[entries].letter = alphabet_list[entries]
+                    game_state = "selection"
+                if e_selection_card.rect.collidepoint(event.pos):
+                    selection_list = selection_list[4:]
+                    alphabet_list = alphabet_list[cut_range:10]
+                    card_list = card_list[:(10 - cut_range)]
+                    random.shuffle(alphabet_list)
+                    random.shuffle(card_list)
+                    for entries in range(0, len(alphabet_list)):
+                        card_list[entries].letter = alphabet_list[entries]
+                    game_state = "selection"
+                if f_selection_card.rect.collidepoint(event.pos):
+                    selection_list = selection_list[5:]
+                    alphabet_list = alphabet_list[cut_range:12]
+                    card_list = card_list[:(12 - cut_range)]
+                    random.shuffle(alphabet_list)
+                    random.shuffle(card_list)
+                    for entries in range(0, len(alphabet_list)):
+                        card_list[entries].letter = alphabet_list[entries]
+                    game_state = "selection"
+                if g_selection_card.rect.collidepoint(event.pos):
+                    selection_list = selection_list[6:]
+                    alphabet_list = alphabet_list[cut_range:14]
+                    card_list = card_list[:(14 - cut_range)]
+                    random.shuffle(alphabet_list)
+                    random.shuffle(card_list)
+                    for entries in range(0, len(alphabet_list)):
+                        card_list[entries].letter = alphabet_list[entries]
+                    game_state = "selection"
+                if h_selection_card.rect.collidepoint(event.pos):
+                    selection_list = selection_list[7:]
+                    alphabet_list = alphabet_list[cut_range:16]
+                    card_list = card_list[:(16 - cut_range)]
+                    random.shuffle(alphabet_list)
+                    random.shuffle(card_list)
+                    for entries in range(0, len(alphabet_list)):
+                        card_list[entries].letter = alphabet_list[entries]
+                    game_state = "selection"
+                if i_selection_card.rect.collidepoint(event.pos):
+                    selection_list = selection_list[8:]
+                    alphabet_list = alphabet_list[cut_range:18]
+                    card_list = card_list[:(18 - cut_range)]
+                    random.shuffle(alphabet_list)
+                    random.shuffle(card_list)
+                    for entries in range(0, len(alphabet_list)):
+                        card_list[entries].letter = alphabet_list[entries]
+                    game_state = "selection"
+                if j_selection_card.rect.collidepoint(event.pos):
+                    selection_list = selection_list[9:]
+                    alphabet_list = alphabet_list[cut_range:20]
+                    card_list = card_list[:(20 - cut_range)]
+                    random.shuffle(alphabet_list)
+                    random.shuffle(card_list)
+                    for entries in range(0, len(alphabet_list)):
+                        card_list[entries].letter = alphabet_list[entries]
+                    game_state = "selection"
+                if k_selection_card.rect.collidepoint(event.pos):
+                    selection_list = selection_list[10:]
+                    alphabet_list = alphabet_list[cut_range:22]
+                    card_list = card_list[:(22 - cut_range)]
+                    random.shuffle(alphabet_list)
+                    random.shuffle(card_list)
+                    for entries in range(0, len(alphabet_list)):
+                        card_list[entries].letter = alphabet_list[entries]
+                    game_state = "selection"
+                if l_selection_card.rect.collidepoint(event.pos):
+                    selection_list = selection_list[11:]
+                    alphabet_list = alphabet_list[cut_range:24]
+                    card_list = card_list[:(24 - cut_range)]
+                    random.shuffle(alphabet_list)
+                    random.shuffle(card_list)
+                    for entries in range(0, len(alphabet_list)):
+                        card_list[entries].letter = alphabet_list[entries]
+                    game_state = "selection"
+                if m_selection_card.rect.collidepoint(event.pos):
+                    selection_list = selection_list[12:]
+                    alphabet_list = alphabet_list[cut_range:26]
+                    card_list = card_list[:(26 - cut_range)]
+                    random.shuffle(alphabet_list)
+                    random.shuffle(card_list)
+                    for entries in range(0, len(alphabet_list)):
+                        card_list[entries].letter = alphabet_list[entries]
+                    game_state = "selection"
+                if n_selection_card.rect.collidepoint(event.pos):
+                    selection_list = selection_list[13:]
+                    alphabet_list = alphabet_list[cut_range:28]
+                    card_list = card_list[:(28 - cut_range)]
+                    random.shuffle(alphabet_list)
+                    random.shuffle(card_list)
+                    for entries in range(0, len(alphabet_list)):
+                        card_list[entries].letter = alphabet_list[entries]
+                    game_state = "selection"
+                if o_selection_card.rect.collidepoint(event.pos):
+                    selection_list = selection_list[14:]
+                    alphabet_list = alphabet_list[cut_range:30]
+                    card_list = card_list[:(30 - cut_range)]
+                    random.shuffle(alphabet_list)
+                    random.shuffle(card_list)
+                    for entries in range(0, len(alphabet_list)):
+                        card_list[entries].letter = alphabet_list[entries]
+                    game_state = "selection"
+                if p_selection_card.rect.collidepoint(event.pos):
+                    selection_list = selection_list[15:]
+                    alphabet_list = alphabet_list[cut_range:32]
+                    card_list = card_list[:(32 - cut_range)]
+                    random.shuffle(alphabet_list)
+                    random.shuffle(card_list)
+                    for entries in range(0, len(alphabet_list)):
+                        card_list[entries].letter = alphabet_list[entries]
+                    game_state = "selection"
+                if q_selection_card.rect.collidepoint(event.pos):
+                    selection_list = selection_list[16:]
+                    alphabet_list = alphabet_list[cut_range:34]
+                    card_list = card_list[:(34 - cut_range)]
+                    random.shuffle(alphabet_list)
+                    random.shuffle(card_list)
+                    for entries in range(0, len(alphabet_list)):
+                        card_list[entries].letter = alphabet_list[entries]
+                    game_state = "selection"
+                if r_selection_card.rect.collidepoint(event.pos):
+                    selection_list = selection_list[17:]
+                    alphabet_list = alphabet_list[cut_range:36]
+                    card_list = card_list[:(36 - cut_range)]
+                    random.shuffle(alphabet_list)
+                    random.shuffle(card_list)
+                    for entries in range(0, len(alphabet_list)):
+                        card_list[entries].letter = alphabet_list[entries]
+                    game_state = "selection"
+                if s_selection_card.rect.collidepoint(event.pos):
+                    selection_list = selection_list[18:]
+                    alphabet_list = alphabet_list[cut_range:38]
+                    card_list = card_list[:(38 - cut_range)]
+                    random.shuffle(alphabet_list)
+                    random.shuffle(card_list)
+                    for entries in range(0, len(alphabet_list)):
+                        card_list[entries].letter = alphabet_list[entries]
+                    game_state = "selection"
+                if t_selection_card.rect.collidepoint(event.pos):
+                    selection_list = selection_list[19:]
+                    alphabet_list = alphabet_list[cut_range:40]
+                    card_list = card_list[:(40 - cut_range)]
+                    random.shuffle(alphabet_list)
+                    random.shuffle(card_list)
+                    for entries in range(0, len(alphabet_list)):
+                        card_list[entries].letter = alphabet_list[entries]
+                    game_state = "selection"
+                if u_selection_card.rect.collidepoint(event.pos):
+                    selection_list = selection_list[20:]
+                    alphabet_list = alphabet_list[cut_range:42]
+                    card_list = card_list[:(42 - cut_range)]
+                    random.shuffle(alphabet_list)
+                    random.shuffle(card_list)
+                    for entries in range(0, len(alphabet_list)):
+                        card_list[entries].letter = alphabet_list[entries]
+                    game_state = "selection"
+                if v_selection_card.rect.collidepoint(event.pos):
+                    selection_list = selection_list[21:]
+                    alphabet_list = alphabet_list[cut_range:44]
+                    card_list = card_list[:(44 - cut_range)]
+                    random.shuffle(alphabet_list)
+                    random.shuffle(card_list)
+                    for entries in range(0, len(alphabet_list)):
+                        card_list[entries].letter = alphabet_list[entries]
+                    game_state = "selection"
+                if w_selection_card.rect.collidepoint(event.pos):
+                    selection_list = selection_list[22:]
+                    alphabet_list = alphabet_list[cut_range:46]
+                    card_list = card_list[:(46 - cut_range)]
+                    random.shuffle(alphabet_list)
+                    random.shuffle(card_list)
+                    for entries in range(0, len(alphabet_list)):
+                        card_list[entries].letter = alphabet_list[entries]
+                    game_state = "selection"
+                if x_selection_card.rect.collidepoint(event.pos):
+                    selection_list = selection_list[23:]
+                    alphabet_list = alphabet_list[cut_range:48]
+                    card_list = card_list[:(48 - cut_range)]
+                    random.shuffle(alphabet_list)
+                    random.shuffle(card_list)
+                    for entries in range(0, len(alphabet_list)):
+                        card_list[entries].letter = alphabet_list[entries]
+                    game_state = "selection"
+                if y_selection_card.rect.collidepoint(event.pos):
+                    selection_list = selection_list[24:]
+                    alphabet_list = alphabet_list[cut_range:50]
+                    card_list = card_list[:(50 - cut_range)]
+                    random.shuffle(alphabet_list)
+                    random.shuffle(card_list)
+                    for entries in range(0, len(alphabet_list)):
+                        card_list[entries].letter = alphabet_list[entries]
+                    game_state = "selection"
+                if z_selection_card.rect.collidepoint(event.pos):
+                    selection_list = selection_list[25:]
+                    alphabet_list = alphabet_list[cut_range:52]
+                    card_list = card_list[:(52 - cut_range)]
+                    random.shuffle(alphabet_list)
+                    random.shuffle(card_list)
+                    for entries in range(0, len(alphabet_list)):
+                        card_list[entries].letter = alphabet_list[entries]
+                    game_state = "selection"
+    elif game_state == "selection":
         pygame.draw.rect(game_window, (127, 255, 127), (200, 200, 1300, 500))
         pygame.draw.rect(game_window, BLACK, (200, 200, 1300, 500), 7)
 
@@ -307,14 +748,15 @@ while game_running:
 # Game state end
     elif game_state == "game":
         # Current Player Display
-        if current_player == 0:
-            pygame.draw.rect(game_window, RED, (1335, 5, 145, 48), 5)
-        elif current_player == 1:
-            pygame.draw.rect(game_window, RED, (1335, 250, 148, 48), 5)
-        elif current_player == 2:
-            pygame.draw.rect(game_window, RED, (1335, 500, 148, 48), 5)
-        elif current_player == 3:
-            pygame.draw.rect(game_window, RED, (1335, 750, 148, 48), 5)
+        if len(card_list) > 0:
+            if current_player == 0:
+                pygame.draw.rect(game_window, RED, (1335, 5, 145, 48), 5)
+            elif current_player == 1:
+                pygame.draw.rect(game_window, RED, (1335, 250, 148, 48), 5)
+            elif current_player == 2:
+                pygame.draw.rect(game_window, RED, (1335, 500, 148, 48), 5)
+            elif current_player == 3:
+                pygame.draw.rect(game_window, RED, (1335, 750, 148, 48), 5)
         for event in ev:
             # Game Completion Prompt
             if len(card_list) == 0:
@@ -354,11 +796,16 @@ while game_running:
                         if not item.clicked:
                             item.flip_card()
                             item.clicked = True
-                    else:
-                        pass
+                            letter_case_check = item.letter.isupper()
+                            if letter_case_check:
+                                for items in card_list:
+                                    if items.letter.isupper():
+                                        items.highlight_effect()
+                            else:
+                                for items in card_list:
+                                    if items.letter.islower():
+                                        items.highlight_effect()
             elif event.type == pygame.QUIT:
                 game_running = False
             pygame.display.update()
     pygame.display.update()
-# TODO
-# add winner's name
