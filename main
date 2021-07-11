@@ -454,6 +454,8 @@ while game_running:
                     selection_list = selection_list[26:]
                     cut_range = 52
                     game_state = "range: end"
+            elif event.type == pygame.QUIT:
+                game_running = False
 # Game state
     elif game_state == "range: end":
         pygame.draw.rect(game_window, (127, 255, 127), (30, 30, 1600, 900))
@@ -689,6 +691,8 @@ while game_running:
                     for entries in range(0, len(alphabet_list)):
                         card_list[entries].letter = alphabet_list[entries]
                     game_state = "selection"
+            elif event.type == pygame.QUIT:
+                game_running = False
     elif game_state == "selection":
         pygame.draw.rect(game_window, (127, 255, 127), (200, 200, 1300, 500))
         pygame.draw.rect(game_window, BLACK, (200, 200, 1300, 500), 7)
@@ -745,6 +749,8 @@ while game_running:
                     generate_players(player_list)
                     for item in card_list:
                         item.draw_card()
+            elif event.type == pygame.QUIT:
+                game_running = False
 # Game state end
     elif game_state == "game":
         # Current Player Display
