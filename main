@@ -1,7 +1,9 @@
 import pygame
 import time
 import random
-# Code to avoid scaling! #
+# Code to avoid scaling! This only works on Windows computers.  
+# Need to make sure this doesn't have any issues on the student's computers when we get the chance
+# Desktop and laptop test - PASS
 import ctypes
 ctypes.windll.user32.SetProcessDPIAware()
 
