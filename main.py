@@ -2,8 +2,11 @@ import pygame
 import time
 import random
 import ctypes
-ctypes.windll.user32.SetProcessDPIAware()
+import os
 
+# Stop Windows scaling and center the display
+ctypes.windll.user32.SetProcessDPIAware()
+os.environ['SDL_VIDEO_CENTERED'] = '1'
 # Create game window
 pygame.init()
 info = pygame.display.Info()
@@ -21,7 +24,6 @@ cream_surface = pygame.Surface((6000, 6000))
 cream_surface.fill((239, 222, 205))
 
 game_window.blit(cream_surface, (0, 0))
-
 player_image_raw = pygame.image.load("player.png")
 player_image = pygame.transform.scale(player_image_raw, (int(125*resize_factor), int(125*resize_factor)))
 font = pygame.font.Font('MitsuEHandwriting-R.otf', int(30*resize_factor))
@@ -347,6 +349,7 @@ game_running = True
 game_state = "range: start"
 choices = []
 cut_range = 0
+
 while game_running:
     ev = pygame.event.get()
     pygame.display.update()
