@@ -3,6 +3,18 @@ import time
 import random
 import ctypes
 import os
+import sys
+
+
+def resource_path(relative_path):
+    """ Get the absolute path to the resource, works for dev and for PyInstaller """
+    try:
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
 
 # Stop Windows scaling and center the display
 ctypes.windll.user32.SetProcessDPIAware()
@@ -24,11 +36,11 @@ cream_surface = pygame.Surface((6000, 6000))
 cream_surface.fill((239, 222, 205))
 
 game_window.blit(cream_surface, (0, 0))
-player_image_raw = pygame.image.load("player.png")
+player_image_raw = pygame.image.load(resource_path("player.png"))
 player_image = pygame.transform.scale(player_image_raw, (int(125*resize_factor), int(125*resize_factor)))
-font = pygame.font.Font('MitsuEHandwriting-R.otf', int(30*resize_factor))
-big_font = pygame.font.Font('MitsuEHandwriting-R.otf', int(50*resize_factor))
-end_font = pygame.font.Font('MitsuEHandwriting-R.otf', int(100*resize_factor))
+font = pygame.font.Font(resource_path('MitsuEHandwriting-R.otf'), int(30*resize_factor))
+big_font = pygame.font.Font(resource_path('MitsuEHandwriting-R.otf'), int(50*resize_factor))
+end_font = pygame.font.Font(resource_path('MitsuEHandwriting-R.otf'), int(100*resize_factor))
 flip_count = 0
 alphabet_list = ["A", "a", "B", "b", "C", "c", "D", "d", "E", "e", "F", "f", "G", "g", "H", "h", "I", "i", "J", "j",
                  "K", "k", "L", "l", "M", "m", "N", "n", "O", "o", "P", "p", "Q", "q", "R", "r", "S", "s", "T", "t",
